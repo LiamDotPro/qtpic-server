@@ -26,11 +26,21 @@ void Thread::run() {
 }
 
 void Thread::readyRead() {
-    QByteArray data = socket->readAll();
+    QImage screenshot;
+    QByteArray data;
 
-    qDebug() << socketDescriptor << " data: " << data;
+    data = socket->readAll();
 
-    socket->write(data);
+    if(screenshot.loadFromData(data)) {
+        qDebug() << "it worked";
+
+        now = QDateTime::currentDateTime();
+        QString fileName = now.toString("'qtpush-'yy-MM-dd-hh-mm-ss'.png'");
+        QFile file(fileName);
+
+        file.open(QIODevice::WriteOnly);
+        screenshot.save(&file, "PNG");
+    }
 }
 
 void Thread::disconnected() {

@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core
-QT       += network
-QT       -= gui
+QT       += core gui network
 
 TARGET = qtp-server
 CONFIG   += console

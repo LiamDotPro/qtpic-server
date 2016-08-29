@@ -4,12 +4,17 @@
 #include <QThread>
 #include <QTcpSocket>
 #include <QDebug>
+#include <QFile>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QtWidgets>
 
 class Thread : public QThread
 {
     Q_OBJECT
 
     QTcpSocket *socket;
+    QBuffer *buffer;
+    QDateTime now;
     int socketDescriptor;
 
 public:
