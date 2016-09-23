@@ -31,8 +31,31 @@ void Thread::readyRead() {
 
     data = socket->readAll();
 
+    QString temp = QString::number(std::rand());
+
     if(screenshot.loadFromData(data)) {
-        qDebug() << "it worked";
+
+        QSqlDatabase db = QSqlDatabase::database();
+        if(db.open ()) {
+            qDebug() << "db connected";
+
+            QSqlQuery qqr;
+            qqr.prepare("INSERT INTO `pics` (filename, data) "
+                        "VALUES (:fn, :dat)");
+            qqr.bindValue(":fn", temp);
+            qqr.bindValue(":dat", data.toBase64());
+            if(qqr.exec()) {
+                qDebug() << "it worked";
+            } else {
+                qDebug() << qqr.lastError().text() << ", " << qqr.lastError().number();
+            }
+
+            db.close();
+        } else {
+            qDebug() << db.lastError();
+        }
+
+
 
         now = QDateTime::currentDateTime();
         QString fileName = now.toString("'qtpush-'yy-MM-dd-hh-mm-ss'.png'");

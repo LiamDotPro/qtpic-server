@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QtWidgets>
+#include <QtSql>
 
 class Thread : public QThread
 {
