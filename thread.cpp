@@ -31,6 +31,16 @@ void Thread::readyRead() {
 
     data = socket->readAll();
 
+    QString qs (data);
+    QStringList qsl = qs.split(',');
+    if(qsl[0] == "login") {
+        qDebug() << "login data";
+        if(qsl[1] == "testy" && qsl[2] == "password") {
+            qDebug() << "logged in";
+        }
+    }
+
+
     QString temp = QString::number(std::rand());
 
     if(screenshot.loadFromData(data)) {
