@@ -10,6 +10,7 @@ void Thread::run() {
     qDebug() << "thread running";
 
     socket = new QTcpSocket;
+    in.setDevice(socket);
 
     if(!socket->setSocketDescriptor(this->socketDescriptor)) {
         //emit error(socket->error());
@@ -23,14 +24,16 @@ void Thread::run() {
     qDebug() << socketDescriptor << " connected";
 
     exec();
+
+    handleImage();
 }
 
 void Thread::readyRead() {
-    QImage screenshot;
-    QByteArray data;
 
-    data = socket->readAll();
+    data += socket->readAll();
 
+    return;
+/*
     QString qs (data);
     QStringList qsl = qs.split(',');
     if(qsl[0] == "login") {
@@ -73,6 +76,17 @@ void Thread::readyRead() {
 
         file.open(QIODevice::WriteOnly);
         screenshot.save(&file, "PNG");
+    }*/
+}
+
+void Thread::handleImage() {
+    qDebug() << "size: " << data.size();
+
+    QString alldata (data);
+    QStringList stringlist = alldata.split('|');
+
+    for(int i = 0; i < stringlist.length(); i++) {
+        qDebug() << stringlist[i];
     }
 }
 

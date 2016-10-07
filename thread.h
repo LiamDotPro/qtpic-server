@@ -8,6 +8,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QtWidgets>
 #include <QtSql>
+#include <string.h>
 
 class Thread : public QThread
 {
@@ -17,7 +18,10 @@ class Thread : public QThread
     QBuffer *buffer;
     QDateTime now;
     int socketDescriptor;
+    QByteArray data;
+    QDataStream in;
 
+    void handleImage();
 public:
     explicit Thread(qintptr threadId,QObject *parent = 0);
     void run();
