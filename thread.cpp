@@ -33,50 +33,6 @@ void Thread::readyRead() {
     data += socket->readAll();
 
     return;
-/*
-    QString qs (data);
-    QStringList qsl = qs.split(',');
-    if(qsl[0] == "login") {
-        qDebug() << "login data";
-        if(qsl[1] == "testy" && qsl[2] == "password") {
-            qDebug() << "logged in";
-        }
-    }
-
-
-    QString temp = QString::number(std::rand());
-
-    if(screenshot.loadFromData(data)) {
-
-        QSqlDatabase db = QSqlDatabase::database();
-        if(db.open ()) {
-            qDebug() << "db connected";
-
-            QSqlQuery qqr;
-            qqr.prepare("INSERT INTO `pics` (filename, data) "
-                        "VALUES (:fn, :dat)");
-            qqr.bindValue(":fn", temp);
-            qqr.bindValue(":dat", data.toBase64());
-            if(qqr.exec()) {
-                qDebug() << "it worked";
-            } else {
-                qDebug() << qqr.lastError().text() << ", " << qqr.lastError().number();
-            }
-
-            db.close();
-        } else {
-            qDebug() << db.lastError();
-        }
-
-
-
-        now = QDateTime::currentDateTime();
-        QString fileName = now.toString("'qtpush-'yy-MM-dd-hh-mm-ss'.png'");
-        QFile file(fileName);
-
-        file.open(QIODevice::WriteOnly);
-        screenshot.save(&file, "PNG");
-    }*/
 }
 
 void Thread::handleImage() {
@@ -85,8 +41,39 @@ void Thread::handleImage() {
     QString alldata (data);
     QStringList stringlist = alldata.split('|');
 
-    for(int i = 0; i < stringlist.length(); i++) {
-        qDebug() << stringlist[i];
+    QSqlDatabase db = QSqlDatabase::database();
+    if(db.open ()) {
+        qDebug() << "db open";
+        QSqlQuery usrChk;
+        if(usrChk.exec("SELECT * FROM `users`")) {
+            while(usrChk.next()) {
+                qDebug() << usrChk.value(1) << " " << usrChk.value(3);
+                if(usrChk.value(1).toString() == stringlist[1]
+                        && usrChk.value(3).toString() == stringlist[2]) {
+                    qDebug() << usrChk.value(1) << " logged in";
+
+                    now = QDateTime::currentDateTime();
+                    QString fileName = now.toString("'qtpush-'yy-MM-dd-hh-mm-ss'.png'");
+
+                    QSqlQuery qqr;
+                    qqr.prepare("INSERT INTO `pics` (u_id, filename, data) "
+                                "VALUES (:uid, :fn, :dat)");
+                    qqr.bindValue(":uid", usrChk.value(0));
+                    qqr.bindValue(":fn", fileName);
+                    qqr.bindValue(":dat", stringlist[0]);
+                    if(qqr.exec()) {
+                        qDebug() << "it worked";
+                    } else {
+                        qDebug() << qqr.lastError().text() << ", " << qqr.lastError().number();
+                    }
+
+                    db.close();
+                    break;
+                } else {
+                    qDebug() << db.lastError().text() << ", " << db.lastError().number();
+                }
+            }
+        }
     }
 }
 
