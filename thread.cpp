@@ -43,26 +43,26 @@ void Thread::handleImage() {
 
     QSqlDatabase db = QSqlDatabase::database();
     if(db.open ()) {
-        qDebug() << "db open";
+        //Get right user
         QSqlQuery usrChk;
         if(usrChk.exec("SELECT * FROM `users`")) {
             while(usrChk.next()) {
-                qDebug() << usrChk.value(1) << " " << usrChk.value(3);
-                if(usrChk.value(1).toString() == stringlist[1]
-                        && usrChk.value(3).toString() == stringlist[2]) {
-                    qDebug() << usrChk.value(1) << " logged in";
-
+                //login
+                if(usrChk.value(0).toString() == stringlist[1]
+                        && usrChk.value(1).toString() == stringlist[2]) {
+                    //save image
                     now = QDateTime::currentDateTime();
                     QString fileName = now.toString("'qtpush-'yy-MM-dd-hh-mm-ss'.png'");
 
                     QSqlQuery qqr;
-                    qqr.prepare("INSERT INTO `pics` (u_id, filename, data) "
-                                "VALUES (:uid, :fn, :dat)");
-                    qqr.bindValue(":uid", usrChk.value(0));
+                    qqr.prepare("INSERT INTO `pics` (username, filename, data) "
+                                "VALUES (:un, :fn, :dat)");
+                    qqr.bindValue(":un", usrChk.value(0));
                     qqr.bindValue(":fn", fileName);
                     qqr.bindValue(":dat", stringlist[0]);
                     if(qqr.exec()) {
-                        qDebug() << "it worked";
+                        qDebug() << "New image saved: " << usrChk.value(0)
+                                 << ", " << fileName;
                     } else {
                         qDebug() << qqr.lastError().text() << ", " << qqr.lastError().number();
                     }
