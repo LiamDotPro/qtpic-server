@@ -6,7 +6,7 @@
 
 QT       += core gui network sql
 
-TARGET = qtp-server
+TARGET = qtpic-server
 CONFIG   += console
 CONFIG   -= app_bundle
 

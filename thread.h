@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QTcpSocket>
+#include <QImage>
 #include <QDebug>
 #include <QFile>
 #include <QtWidgets/QWidget>

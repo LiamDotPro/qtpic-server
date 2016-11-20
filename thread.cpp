@@ -40,6 +40,11 @@ void Thread::handleImage() {
 
     QString alldata (data);
     QStringList stringlist = alldata.split('|');
+    QList<QByteArray> qlba = data.split('|');
+    
+    for(int i = 0; i < qlba.length(); i++) {
+        qDebug() << i;
+    }
 
     QSqlDatabase db = QSqlDatabase::database();
     if(db.open ()) {
@@ -47,19 +52,33 @@ void Thread::handleImage() {
         QSqlQuery usrChk;
         if(usrChk.exec("SELECT * FROM `users`")) {
             while(usrChk.next()) {
+                qDebug() << "0: " << usrChk.value(0);
+                qDebug() << "1: " << usrChk.value(1);
+                qDebug() << "sl1: " << stringlist[1];
+                qDebug() << "sl2: " << stringlist[2];
+                
                 //login
                 if(usrChk.value(0).toString() == stringlist[1]
                         && usrChk.value(1).toString() == stringlist[2]) {
                     //save image
+                    QDir dir;
                     now = QDateTime::currentDateTime();
                     QString fileName = now.toString("'qtpush-'yy-MM-dd-hh-mm-ss'.png'");
+                    dir.mkdir(QCoreApplication::applicationDirPath() + "/img/" + stringlist[1]);
+                    fileName = QCoreApplication::applicationDirPath() + "/img/" + stringlist[1] + "/" + fileName;
+                    QFile file(fileName);
+                    file.open(QIODevice::WriteOnly);
+                    QByteArray ba_img = QByteArray::fromBase64(qlba[0]);
+                    QImage img = QImage::fromData(ba_img);
+                    img.save(&file, "PNG");
+                    
 
                     QSqlQuery qqr;
                     qqr.prepare("INSERT INTO `pics` (username, filename, data) "
                                 "VALUES (:un, :fn, :dat)");
                     qqr.bindValue(":un", usrChk.value(0));
                     qqr.bindValue(":fn", fileName);
-                    qqr.bindValue(":dat", stringlist[0]);
+                    qqr.bindValue(":dat", "img/"+stringlist[1]+"/"+fileName);
                     if(qqr.exec()) {
                         qDebug() << "New image saved: " << usrChk.value(0)
                                  << ", " << fileName;
