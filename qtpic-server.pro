@@ -1,22 +1,20 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-08-28T20:10:43
-#
-#-------------------------------------------------
+QT += core network
+QT -= gui
 
-QT       += core gui network sql
+CONFIG += c++11
 
 TARGET = qtpic-server
-CONFIG   += console
-CONFIG   -= app_bundle
+CONFIG += console
+CONFIG -= app_bundle
 
 TEMPLATE = app
 
-
 SOURCES += main.cpp \
-    server.cpp \
-    thread.cpp
+    client.cpp \
+    mserver.cpp \
+    savetask.cpp
 
 HEADERS += \
-    server.h \
-    thread.h
+    client.h \
+    mserver.h \
+    savetask.h
