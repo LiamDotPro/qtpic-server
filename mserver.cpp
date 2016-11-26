@@ -12,7 +12,6 @@ MServer::MServer(QObject *parent) :
 
 void MServer::incomingConnection(qintptr handle)
 {
-    qDebug() << "Got Connection";
     Client *client = new Client(this);
     client->setSocket(handle);
 }

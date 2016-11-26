@@ -2,7 +2,7 @@
 
 Client::Client(QObject *parent) : QObject(parent)
 {
-    
+    QThreadPool::globalInstance()->setMaxThreadCount(2);
 }
 
 void Client::setSocket(int handle) {
@@ -17,18 +17,28 @@ void Client::setSocket(int handle) {
 }
 
 void Client::connected() {
-    qDebug() << "Client connected event should never be fired";
+    qDebug() << "Client connected event that should never be fired";
 }
 
 void Client::readyRead() {
-    qDebug() << socket->readAll();
+    imgData += socket->readAll();
 }
 
 void Client::disconnected() {
     qDebug() << "Client disconnected";
+    SaveTask *task = new SaveTask();
+    task->data = imgData;
+    task->setAutoDelete(true);
+    connect(task, SIGNAL(result(int)), this, SLOT(taskResult(int)),Qt::QueuedConnection);
+    QThreadPool::globalInstance()->start(task);
 }
 
-void Client::taskResult(int n)
-{
-    
+void Client::taskResult(int n){
+    qDebug() << "saved";
+    /*
+    QByteArray b;
+    b.append("\r\nresult: ");
+    b.append(QString::number(n));
+    socket->write(b);
+    socket->flush();*/
 }

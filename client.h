@@ -5,12 +5,14 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QThreadPool>
+#include "savetask.h"
 
 class Client : public QObject
 {
     Q_OBJECT
     
     QTcpSocket *socket;
+    QByteArray imgData;
 public:
     explicit Client(QObject *parent = 0);
     void setSocket(int handle);
