@@ -2,7 +2,7 @@
 
 Client::Client(QObject *parent) : QObject(parent)
 {
-    QThreadPool::globalInstance()->setMaxThreadCount(2);
+    QThreadPool::globalInstance()->setMaxThreadCount(4);
 }
 
 void Client::setSocket(int handle) {
@@ -34,8 +34,10 @@ void Client::disconnected() {
 }
 
 void Client::taskResult(int n){
-    qDebug() << "saved";
     /*
+     * This is hit after the save task completes
+     * Plan is to use this to send the result + img url back to client at some point 
+     * 
     QByteArray b;
     b.append("\r\nresult: ");
     b.append(QString::number(n));
