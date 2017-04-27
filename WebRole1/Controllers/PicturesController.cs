@@ -19,7 +19,7 @@ namespace WebRole1.Controllers
 {
     public class PicturesController : ApiController
     {
-        private PicturesContext db = new PicturesContext();
+        /*private PicturesContext db = new PicturesContext();
 
         // GET: api/Pictures
         public IQueryable<Picture> GetPictures()
@@ -118,6 +118,6 @@ namespace WebRole1.Controllers
         private bool PictureExists(int id)
         {
             return db.Pictures.Count(e => e.picId == id) > 0;
-        }
+        }*/
     }
 }

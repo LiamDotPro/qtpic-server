@@ -26,8 +26,9 @@ namespace WebRole1.Controllers
             return _blobStorageService.GetCloudBlobContainer();
         }
 
+        //TODO: This, maybe, it might not be needed though.
         // GET: api/Data/5
-        [ResponseType(typeof(Picture))]
+        /*[ResponseType(typeof(Picture))]
         public IHttpActionResult GetPicture(int id)
         {
             Picture picture = db.Pictures.Find(id);
@@ -52,10 +53,10 @@ namespace WebRole1.Controllers
             res = ResponseMessage(msg);
 
             return res;
-        }
+        }*/
 
         // PUT: api/Data/5
-        [ResponseType(typeof(void))]
+        /*[ResponseType(typeof(void))]
         public IHttpActionResult PutPicture(int id)
         {
             try {
@@ -84,6 +85,38 @@ namespace WebRole1.Controllers
                 Console.WriteLine(e.Message);
                 return BadRequest();
             }   
+        }*/
+
+        // POST: api/Data
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PostPicture() {
+            try {
+                System.Diagnostics.Trace.WriteLine(string.Format("WebRole: Saving image."));
+
+                var request = HttpContext.Current.Request;
+
+                Picture picture = new Picture() {
+                    FileName = "qtpic-" + string.Format(DateTime.Now.ToString()),
+                    UploadTime = DateTime.Now
+                };
+
+                var blobTarget = "username/" + picture.FileName;
+
+                var blob = GetBlobContainer().GetBlockBlobReference(blobTarget);
+                blob.Properties.ContentType = "image/png";
+                blob.UploadFromStream(request.InputStream);
+
+                picture.BlobPath = blobTarget;
+
+                db.Pictures.Add(picture);
+                db.SaveChanges();
+
+                return Ok();
+
+            } catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return BadRequest();
+            }
         }
 
         protected override void Dispose(bool disposing)
