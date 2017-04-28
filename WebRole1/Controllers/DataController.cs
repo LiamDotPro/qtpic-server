@@ -92,12 +92,12 @@ namespace WebRole1.Controllers
         public IHttpActionResult PostPicture() {
             try {
                 System.Diagnostics.Trace.WriteLine(string.Format("WebRole: Saving image."));
-
+                DateTime now = DateTime.Now;
                 var request = HttpContext.Current.Request;
 
                 Picture picture = new Picture() {
-                    FileName = "qtpic-" + string.Format(DateTime.Now.ToString()),
-                    UploadTime = DateTime.Now
+                    FileName = string.Format("qtpic-{0}.png", now.ToString("yyyy-MM-dd-HH-mm-ss")),
+                    UploadTime = now
                 };
 
                 var blobTarget = "username/" + picture.FileName;
