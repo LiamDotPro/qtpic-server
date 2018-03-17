@@ -1,4 +1,4 @@
 # qtpic
-Server to receive and store images for qtpic.net
+Currently re-writing.
 
-Changed from Qt to C# w/ .Net HTTP API.
+See legacy branch for old C# + C++ implementations.
